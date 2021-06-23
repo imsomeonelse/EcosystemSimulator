@@ -2,6 +2,8 @@ using UnityEngine;
 
 namespace TerrainGeneration {
     public class TerrainData {
+        const int mapRegionSize = 10;
+        
         public int size;
         public Vector3[, ] tileCentres;
         public bool[, ] walkable;

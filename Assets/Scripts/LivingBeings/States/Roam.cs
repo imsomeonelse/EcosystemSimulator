@@ -15,6 +15,7 @@ namespace AnimalManagement{
 
         public override void OnStateEnter()
         {
+            Debug.Log("Roaming");
             SetDestination();
         }
 
@@ -60,19 +61,17 @@ namespace AnimalManagement{
 
         private void StopWalking()
         {
+            animal.ReachedDestination();
+        }
+
+        public override void OnStateExit() 
+        {
             animal.currentSpeed = 0;
 
             for(int i = 0; i < animal.anim.Length; i++)
             {
                 animal.anim[i].SetFloat("speed", animal.currentSpeed);
             }
-
-            animal.ReachedDestination();
-        }
-
-        public override void OnStateExit() 
-        {
-
         }
     }
 }

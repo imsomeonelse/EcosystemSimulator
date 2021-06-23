@@ -7,7 +7,7 @@ namespace AnimalManagement{
     {
         public Wait(Animal animal) : base(animal)
         {
-            
+            Debug.Log("Waiting");
         }
 
         public override void OnStateEnter()

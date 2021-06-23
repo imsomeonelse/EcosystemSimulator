@@ -9,15 +9,20 @@ namespace AnimalManagement{
         public Coord coord;
         [HideInInspector]
         public int mapIndex;
+        public int foodValue = 70;
 
         protected bool dead;
 
-        public virtual void Init (Coord coord) {
+        public virtual void Init (Coord coord) 
+        {
             this.coord = coord;
             transform.position = EnvironmentManager.tileCentres[coord.x, coord.y];
         }
 
-        public virtual void Die () {
+        public virtual void Deactivate() { }
+
+        public virtual void Die ()
+        {
             if (!dead) {
                 dead = true;
                 Destroy (gameObject);

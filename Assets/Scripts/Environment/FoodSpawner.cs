@@ -8,12 +8,15 @@ namespace AnimalManagement{
         public GameObject[] FoodPlants;
         public int Quantity;
 
-        List<Plant> foodPlants = new List<Plant>();
+        public static Map plantFoodCoords;
+
+        public GameObject UI;
 
         float maxScaleDeviation = .01f;
 
-        public void SpawnInitialPopulation(int seed, List<Coord> walkableCoords)
+        public void SpawnInitialPopulation(int seed, List<Coord> walkableCoords, int size, int mapRegionSize)
         {
+            plantFoodCoords = new Map (size, mapRegionSize);
 
             var spawnPrng = new System.Random (seed);
             var spawnCoords = new List<Coord>(walkableCoords);
@@ -36,10 +39,13 @@ namespace AnimalManagement{
                     newFoodPlant.transform.localScale = Vector3.one * scale;
                     newFoodPlant.transform.parent = foodHolder;
 
+                    GameObject ui = Instantiate(UI);
+                    ui.transform.SetParent(newFoodPlant.transform);
+
                     Plant plantScript = newFoodPlant.AddComponent<Plant>();
                     plantScript.Init(coord);
 
-                    foodPlants.Add(plantScript);
+                    plantFoodCoords.Add(plantScript, coord);
                 }
             }
 

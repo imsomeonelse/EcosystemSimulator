@@ -48,6 +48,10 @@ namespace AnimalManagement{
         }
 
         public float BaseSpeed;
+        public int MaxViewDistance;
+        public float HungerTime;
+        public float ThirstTime;
+        public float MateUrgency;
     }
 
     [System.Serializable]
@@ -95,6 +99,10 @@ namespace AnimalManagement{
         }
 
         public float BaseSpeed;
+        public int MaxViewDistance;
+        public float HungerTime;
+        public float ThirstTime;
+        public float MateUrgency;
     }
 
     [System.Serializable]
@@ -130,7 +138,7 @@ namespace AnimalManagement{
 
                         GameObject newPrey =  Instantiate(pMan.Prefab);
                         Prey preyScript = newPrey.AddComponent<Prey>();
-                        preyScript.Init(coord, pMan.BaseSpeed);
+                        preyScript.Init(coord, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, pMan.MateUrgency);
 
                         _AnimalList.Add(preyScript);
                     }
@@ -151,7 +159,7 @@ namespace AnimalManagement{
 
                         GameObject newPredator =  Instantiate(pMan.Prefab);
                         Predator predatorScript = newPredator.AddComponent<Predator>();
-                        predatorScript.Init(coord, pMan.BaseSpeed);
+                        predatorScript.Init(coord, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, pMan.MateUrgency);
 
                         _AnimalList.Add(predatorScript);
                     }

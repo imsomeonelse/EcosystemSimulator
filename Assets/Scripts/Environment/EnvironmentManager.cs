@@ -6,15 +6,17 @@ using TerrainGeneration;
 
 public class EnvironmentManager : MonoBehaviour
 {
+    const int mapRegionSize = 10;
+
     public int seed;
 
     public static List<Coord> walkableCoords;
     public static bool[, ] walkable;
     public static Vector3[, ] tileCentres;
-    static int size;
+    public static int size;
 
     static System.Random prng;
-    TerrainGeneration.TerrainData terrainData;
+    public static TerrainGeneration.TerrainData terrainData;
 
     static Coord[,][] walkableNeighboursMap;
 
@@ -35,7 +37,7 @@ public class EnvironmentManager : MonoBehaviour
 
         walkableCoords = GetComponent<FloraSpawner>().SpawnFlora(seed, terrainData, walkable, tileCentres);
 
-        GetComponent<FoodSpawner>().SpawnInitialPopulation(seed, walkableCoords);
+        GetComponent<FoodSpawner>().SpawnInitialPopulation(seed, walkableCoords, size, mapRegionSize);
 
         GetComponent<AnimalManager>().SpawnInitialPopulation(seed, walkableCoords);
 
@@ -44,6 +46,7 @@ public class EnvironmentManager : MonoBehaviour
     /// Get random neighbour tile, weighted towards those in similar direction as currently facing
     public static Coord GetRandomWalkable() 
     {
-        return walkableCoords[prng.Next(walkableCoords.Count)];
+        System.Random rand = new System.Random();
+        return walkableCoords[rand.Next(walkableCoords.Count)];
     }
 }
