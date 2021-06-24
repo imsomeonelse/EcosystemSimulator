@@ -143,6 +143,10 @@ namespace TerrainGeneration {
                     // Terrain data:
                     terrainData.tileCentres[x, y] = nw + new Vector3 (0.5f, 0, -0.5f);
                     terrainData.walkable[x, y] = isLandTile;
+
+                    if(isWaterTile){
+                        terrainData.waterCoords.Add(new Coord (x, y));
+                    }
                 }
             }
 

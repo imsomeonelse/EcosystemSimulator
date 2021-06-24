@@ -29,8 +29,6 @@ namespace AnimalManagement{
                     if(!animal.meshAgent.hasPath || animal.meshAgent.velocity.sqrMagnitude == 0f)
                     {
                         animal.coord = newCoord;
-
-                        //Debug.Log("Prev coord: " + animal.previousCoord.ToString() + " Current coord: " + animal.coord.ToString());
                         
                         StopWalking();
                     }

@@ -172,6 +172,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4973420790942800}
   - component: {fileID: 205471599979880382}
+  - component: {fileID: 5647588689740308141}
   m_Layer: 0
   m_Name: Herb_B_01
   m_TagString: Untagged
@@ -228,6 +229,19 @@ LODGroup:
     renderers:
     - renderer: {fileID: 23297270828854634}
   m_Enabled: 1
+--- !u!135 &5647588689740308141
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1345697575611798}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 2
+  m_Center: {x: 0, y: 2, z: 0}
 --- !u!1 &1783628676021090
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,6 +10,7 @@ namespace AnimalManagement{
 
         public static Map plantFoodCoords;
 
+        public float spawnTime;
         public GameObject UI;
 
         float maxScaleDeviation = .01f;
@@ -43,7 +44,7 @@ namespace AnimalManagement{
                     ui.transform.SetParent(newFoodPlant.transform);
 
                     Plant plantScript = newFoodPlant.AddComponent<Plant>();
-                    plantScript.Init(coord);
+                    plantScript.Init(coord, spawnTime);
 
                     plantFoodCoords.Add(plantScript, coord);
                 }

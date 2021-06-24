@@ -118,10 +118,8 @@ namespace AnimalManagement{
 
         List<Animal> _AnimalList = new List<Animal>();
 
-        public void SpawnInitialPopulation(int seed, List<Coord> walkableCoords)
+        public void SpawnInitialPopulation(List<Coord> walkableCoords)
         {
-
-            var spawnPrng = new System.Random (seed);
             var spawnCoords = new List<Coord>(walkableCoords);
 
             foreach (PreyManager pMan in _Prey)
@@ -132,7 +130,7 @@ namespace AnimalManagement{
                     if (spawnCoords.Count == 0) {
                         Debug.Log ("Ran out of empty tiles to spawn initial population");
                     }else{
-                        int spawnCoordIndex = spawnPrng.Next (0, spawnCoords.Count);
+                        int spawnCoordIndex = Random.Range(0, spawnCoords.Count);
                         Coord coord = spawnCoords[spawnCoordIndex];
                         spawnCoords.RemoveAt(spawnCoordIndex);
 
@@ -153,7 +151,7 @@ namespace AnimalManagement{
                     if (spawnCoords.Count == 0) {
                         Debug.Log ("Ran out of empty tiles to spawn initial population");
                     }else{
-                        int spawnCoordIndex = spawnPrng.Next (0, spawnCoords.Count);
+                        int spawnCoordIndex = Random.Range(0, spawnCoords.Count);
                         Coord coord = spawnCoords[spawnCoordIndex];
                         spawnCoords.RemoveAt(spawnCoordIndex);
 

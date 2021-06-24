@@ -22,9 +22,6 @@ namespace AnimalManagement{
 
         public State CurrentState;
 
-        //Randomization things
-        static System.Random prng;
-
         //General parameters
         public float BaseSpeed;
         public float SensoryDistance;
@@ -51,7 +48,8 @@ namespace AnimalManagement{
         public MeterBar HungerBar;
         public MeterBar ThirstBar;
 
-        public Coord[,] waterCoords;
+        public bool LookForFood;
+        public bool LookForWater;
         
         //AI things
         public NavMeshAgent meshAgent;
@@ -74,8 +72,6 @@ namespace AnimalManagement{
         {
             base.Init(coord);
 
-            prng = new System.Random();
-
             anim = GetComponentsInChildren<Animator>();
 
             meshAgent = GetComponent<NavMeshAgent>();
@@ -86,15 +82,16 @@ namespace AnimalManagement{
 
             CreateGender();
 
+            this.LookForFood = true;
+            this.LookForWater = true;
             CreateNeeds(hungerTime, thirstTime, mateUrgency);
-            CreateNearestWater();
              
             SetState(new Roam(this));
         }
 
         public void CreateGender()
         {
-            int gender = prng.Next(0, 2);
+            int gender = Random.Range(0, 2);
             
             this.Gender = gender == 0 ? Gender.Female : Gender.Male;
 
@@ -132,17 +129,23 @@ namespace AnimalManagement{
 
         public void ManageNeeds()
         {
-            this.HungerPercentage = this.HungerBar.GetHunger() * 100 / this.HungerTime;
-            this.ThirstPercentage = this.ThirstBar.GetHunger() * 100 / this.ThirstTime;
+            this.HungerPercentage = this.HungerBar.GetValue() * 100 / this.HungerTime;
+            this.ThirstPercentage = this.ThirstBar.GetValue() * 100 / this.ThirstTime;
 
-            if(this.HungerPercentage > 10 && (CurrentState is Roam || CurrentState is Wait))
+            if(this.ThirstPercentage > this.HungerPercentage)
             {
-                SetState(new FindFood(this));
+                if(this.ThirstPercentage > 15 && (CurrentState is Roam || CurrentState is Wait) && this.LookForWater)
+                {
+                    SetState(new FindWater(this));
+                }
+                
             }
-
-            if(this.ThirstPercentage > 15 && (CurrentState is Roam || CurrentState is Wait))
+            else
             {
-                SetState(new FindWater(this));
+                if(this.HungerPercentage > 10 && (CurrentState is Roam || CurrentState is Wait) && LookForFood)
+                {
+                    SetState(new FindFood(this));
+                }
             }
 
             if(this.HungerPercentage >= 100 || this.ThirstPercentage >= 100)
@@ -164,20 +167,10 @@ namespace AnimalManagement{
 
         IEnumerator RoamAround()
         {
-            float waitLength = (float)(prng.Next(0, 2) + prng.NextDouble());
+            float waitLength = Random.Range(0f, 2.0f);
             SetState(new Wait(this));
             yield return new WaitForSeconds(waitLength);
             SetState(new Roam(this));
-        }
-
-        public void ReachedFood()
-        {   
-            SetState(new Eat(this));
-        }
-
-        public void ReachedWater()
-        {   
-            SetState(new Drink(this));
         }
 
         public void Feed()
@@ -200,50 +193,46 @@ namespace AnimalManagement{
             SetState(new Roam(this));
         }
 
-        public void ReachedDestination()
-        {
-            StartCoroutine(RoamAround());
+        public void ReachedFood()
+        {   
+            SetState(new Eat(this));
         }
 
-        private void CreateNearestWater()
+        IEnumerator NotFoundFood()
         {
-            List<Coord> viewOffsets = new List<Coord> ();
-            int viewRadius = this.MaxViewDistance;
-            int sqrViewRadius = viewRadius * viewRadius;
-            for (int offsetY = -viewRadius; offsetY <= viewRadius; offsetY++) {
-                for (int offsetX = -viewRadius; offsetX <= viewRadius; offsetX++) {
-                    int sqrOffsetDst = offsetX * offsetX + offsetY * offsetY;
-                    if ((offsetX != 0 || offsetY != 0) && sqrOffsetDst <= sqrViewRadius) {
-                        viewOffsets.Add (new Coord (offsetX, offsetY));
-                    }
-                }
-            }
+            float waitLength = Random.Range(1f, 2.9f);
+            SetState(new Roam(this));
+            yield return new WaitForSeconds(waitLength);
+            this.LookForFood = true;
+        }
 
-            viewOffsets.Sort ((a, b) => (a.x * a.x + a.y * a.y).CompareTo (b.x * b.x + b.y * b.y));
-            Coord[] viewOffsetsArr = viewOffsets.ToArray ();
-            waterCoords = new Coord[EnvironmentManager.size, EnvironmentManager.size];
-            for (int y = 0; y < EnvironmentManager.terrainData.size; y++) {
-                for (int x = 0; x < EnvironmentManager.terrainData.size; x++) {
-                    bool foundWater = false;
-                    if (EnvironmentManager.walkable[x, y]) {
-                        for (int i = 0; i < viewOffsets.Count; i++) {
-                            int targetX = x + viewOffsetsArr[i].x;
-                            int targetY = y + viewOffsetsArr[i].y;
-                            if (targetX >= 0 && targetX < EnvironmentManager.size && targetY >= 0 && targetY < EnvironmentManager.size) {
-                                if (EnvironmentManager.terrainData.shore[targetX, targetY]) {
-                                    if (EnvironmentUtility.TileIsVisibile (x, y, targetX, targetY)) {
-                                        waterCoords[x, y] = new Coord (targetX, targetY);
-                                        foundWater = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (!foundWater) {
-                        waterCoords[x, y] = Coord.invalid;
-                    }
-                }
+        public void ReachedWater()
+        {   
+            SetState(new Drink(this));
+        }
+
+        IEnumerator NotFoundWater()
+        {
+            float waitLength = Random.Range(1f, 2.9f);
+            SetState(new Roam(this));
+            yield return new WaitForSeconds(waitLength);
+            this.LookForWater = true;
+        }
+
+        public void ReachedDestination()
+        {
+            if(CurrentState is FindFood)
+            {
+                this.LookForFood = false;
+                StartCoroutine(NotFoundFood());
+            }
+            if(CurrentState is FindWater){
+                this.LookForWater = false;
+                StartCoroutine(NotFoundWater());
+            }
+            else
+            {
+                StartCoroutine(RoamAround());
             }
         }
     }

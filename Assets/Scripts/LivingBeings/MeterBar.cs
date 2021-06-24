@@ -54,7 +54,7 @@ namespace AnimalManagement{
             currentHunger = Mathf.Clamp(currentHunger - val, 0, slider.maxValue);
         }
 
-        public float GetHunger()
+        public float GetValue()
         {
             return currentHunger;
         }

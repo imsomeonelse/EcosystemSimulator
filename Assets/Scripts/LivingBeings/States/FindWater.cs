@@ -31,7 +31,7 @@ namespace AnimalManagement{
                     {
                         animal.coord = newCoord;
                         
-                        StopWalking();
+                        ReachedWater();
                     }
                 }
             }
@@ -40,17 +40,14 @@ namespace AnimalManagement{
 
         private void Find()
         {
-            if(animal is Prey)
-            {
-                closestWater = animal.waterCoords[animal.coord.x, animal.coord.y];
-            }
-            if(closestWater != null){
+            closestWater = EnvironmentManager.GetClosestWater(animal.transform.position, animal.MaxViewDistance);
+            if(closestWater.x != 0 && closestWater.y != 0){
                 SetDestination();
                 animal.WaterTarget = closestWater;
             }
             else
             {
-                animal.ReachedDestination();
+                NotFoundWater();
             }
         }
 
@@ -71,12 +68,16 @@ namespace AnimalManagement{
             UnityEngine.AI.NavMeshPath path = new UnityEngine.AI.NavMeshPath();
             animal.meshAgent.CalculatePath(destination, path);
             /* if (path.status == UnityEngine.AI.NavMeshPathStatus.PathPartial) {
-                Debug.Log("partial");
-                StopWalking();
+                NotFoundWater();
             } */
         }
 
-        private void StopWalking()
+        private void NotFoundWater()
+        {
+            animal.ReachedDestination();
+        }
+
+        private void ReachedWater()
         {
             animal.ReachedWater();
         }

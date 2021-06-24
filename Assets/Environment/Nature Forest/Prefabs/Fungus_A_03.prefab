@@ -172,6 +172,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4441665938279502}
   - component: {fileID: 205820978738061392}
+  - component: {fileID: 3214916670884740022}
   m_Layer: 0
   m_Name: Fungus_A_03
   m_TagString: Untagged
@@ -228,6 +229,19 @@ LODGroup:
     renderers:
     - renderer: {fileID: 23258242408052390}
   m_Enabled: 1
+--- !u!135 &3214916670884740022
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1347998589426392}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.5
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &1349639706480484
 GameObject:
   m_ObjectHideFlags: 0

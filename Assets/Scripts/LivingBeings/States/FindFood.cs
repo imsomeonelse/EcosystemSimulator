@@ -17,7 +17,7 @@ namespace AnimalManagement{
         public override void OnStateEnter()
         {
             Debug.Log("Finding Food");
-            Find2();
+            Find();
         }
 
         public override void Tick()
@@ -31,14 +31,14 @@ namespace AnimalManagement{
                     {
                         animal.coord = newCoord;
                         
-                        StopWalking();
+                        ReachedFood();
                     }
                 }
             }
 
         }
 
-        private void Find()
+        /* private void Find()
         {
             if(animal is Prey)
             {
@@ -57,15 +57,52 @@ namespace AnimalManagement{
             {
                 animal.ReachedDestination();
             }
-        }
+        } */
 
-        private void Find2()
+        private void Find()
         {
             Collider[] hitColliders = Physics.OverlapSphere(animal.transform.position, animal.MaxViewDistance);
-            foreach (var hitCollider in hitColliders)
+            if(hitColliders.Length > 1)
             {
-                Debug.Log(hitCollider);
+                closestFood = FindClosest(hitColliders);
+                if(closestFood is Plant){
+                    Plant plantFood = closestFood as Plant;
+                    if(!plantFood.isActive)
+                    {
+                        NotFoundFood();
+                    }
+                }
+                SetDestination();
+                animal.FoodTarget = closestFood;
+            }else
+            {
+                NotFoundFood();
             }
+        }
+
+        private LivingBeing FindClosest(Collider[] objsFound)
+        {  
+            LivingBeing closest = objsFound[0].gameObject.GetComponent<LivingBeing>();
+
+            if (closest == animal)
+            {
+                closest = objsFound[1].gameObject.GetComponent<LivingBeing>();
+            }
+
+            float lowestDist = animal.MaxViewDistance;
+
+            for(int i = 0; i < objsFound.Length; i++)
+            {
+                float dist = Vector3.Distance(objsFound[i].transform.position, animal.transform.position);
+
+                if (dist < lowestDist && objsFound[i].gameObject.layer != LayerMask.NameToLayer("Animal"))
+                {
+                    lowestDist = dist;
+                    closest = objsFound[i].gameObject.GetComponent<LivingBeing>();
+                }
+            }
+
+            return closest;
         }
 
         private void SetDestination()
@@ -84,12 +121,17 @@ namespace AnimalManagement{
 
             UnityEngine.AI.NavMeshPath path = new UnityEngine.AI.NavMeshPath();
             animal.meshAgent.CalculatePath(destination, path);
-            /* if (path.status == UnityEngine.AI.NavMeshPathStatus.PathPartial) {
-                StopWalking();
-            } */
+            if (path.status == UnityEngine.AI.NavMeshPathStatus.PathPartial) {
+                NotFoundFood();
+            }
         }
 
-        private void StopWalking()
+        private void NotFoundFood()
+        {
+            animal.ReachedDestination();
+        }
+
+        private void ReachedFood()
         {
             animal.ReachedFood();
         }

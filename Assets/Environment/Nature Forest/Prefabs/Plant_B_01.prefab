@@ -172,6 +172,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4192811469992910}
   - component: {fileID: 205336135044565354}
+  - component: {fileID: 5713672568380246817}
   m_Layer: 0
   m_Name: Plant_B_01
   m_TagString: Untagged
@@ -228,6 +229,19 @@ LODGroup:
     renderers:
     - renderer: {fileID: 23281686919565490}
   m_Enabled: 1
+--- !u!135 &5713672568380246817
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1261414519926400}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 2
+  m_Center: {x: 0, y: 1.5, z: 0}
 --- !u!1 &1336972287829944
 GameObject:
   m_ObjectHideFlags: 0
