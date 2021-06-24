@@ -118,12 +118,19 @@ namespace AnimalManagement{
 
         List<Animal> _AnimalList = new List<Animal>();
 
+        public Counter PredatorCounter;
+        public Counter PreyCounter;
+
+        private int NumPredators = 0;
+        private int NumPrey = 0;
+
         public void SpawnInitialPopulation(List<Coord> walkableCoords)
         {
             var spawnCoords = new List<Coord>(walkableCoords);
 
             foreach (PreyManager pMan in _Prey)
             {
+                this.NumPrey += pMan.Quantity;
                 int numToSpawn = pMan.Quantity;
                 for(int i = 0; i < numToSpawn; i++)
                 {
@@ -145,6 +152,7 @@ namespace AnimalManagement{
 
             foreach (PredatorManager pMan in _Predator)
             {
+                this.NumPredators += pMan.Quantity;
                 int numToSpawn = pMan.Quantity;
                 for(int i = 0; i < numToSpawn; i++)
                 {
@@ -163,6 +171,26 @@ namespace AnimalManagement{
                     }
                 }
             }
+
+            UpdateUI();
+        }
+
+        public void UpdateUI()
+        {
+            PredatorCounter.UpdateValue(this.NumPredators.ToString());
+            PreyCounter.UpdateValue(this.NumPrey.ToString());
+        }
+
+        public void RemovePredator()
+        {
+            this.NumPredators -= 1; 
+            UpdateUI();
+        }
+
+        public void RemovePrey()
+        {
+            this.NumPrey -= 1;  
+            UpdateUI();
         }
     }
 }

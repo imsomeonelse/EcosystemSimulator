@@ -25,6 +25,18 @@ namespace AnimalManagement{
         {
             if (!dead) {
                 dead = true;
+
+                AnimalManager aM = Object.FindObjectOfType<AnimalManager>();
+
+                if(this is Predator)
+                {
+                    aM.RemovePredator();
+                }
+                if(this is Prey)
+                {
+                    aM.RemovePrey();
+                }
+                
                 Destroy (gameObject);
             }
         }
