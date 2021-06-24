@@ -47,10 +47,13 @@ namespace AnimalManagement{
             }
         }
 
+        public float BabyTime;
+        public float AdultTime;
         public float BaseSpeed;
         public int MaxViewDistance;
         public float HungerTime;
         public float ThirstTime;
+        public float MateTime;
         public float MateUrgency;
     }
 
@@ -98,10 +101,13 @@ namespace AnimalManagement{
             }
         }
 
+        public float BabyTime;
+        public float AdultTime;
         public float BaseSpeed;
         public int MaxViewDistance;
         public float HungerTime;
         public float ThirstTime;
+        public float MateTime;
         public float MateUrgency;
     }
 
@@ -143,7 +149,9 @@ namespace AnimalManagement{
 
                         GameObject newPrey =  Instantiate(pMan.Prefab);
                         Prey preyScript = newPrey.AddComponent<Prey>();
-                        preyScript.Init(coord, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, pMan.MateUrgency);
+                        preyScript.Init(
+                            coord, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
+                            pMan.MateUrgency, pMan.MateTime, pMan.AdultTime, pMan.BabyTime, false);
 
                         _AnimalList.Add(preyScript);
                     }
@@ -165,14 +173,21 @@ namespace AnimalManagement{
 
                         GameObject newPredator =  Instantiate(pMan.Prefab);
                         Predator predatorScript = newPredator.AddComponent<Predator>();
-                        predatorScript.Init(coord, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, pMan.MateUrgency);
-
+                        predatorScript.Init(
+                            coord, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
+                            pMan.MateUrgency, pMan.MateTime, pMan.AdultTime, pMan.BabyTime, false);
+                            
                         _AnimalList.Add(predatorScript);
                     }
                 }
             }
 
             UpdateUI();
+        }
+
+        public void CreateNew()
+        {
+
         }
 
         public void UpdateUI()

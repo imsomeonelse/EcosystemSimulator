@@ -16,7 +16,7 @@ namespace AnimalManagement{
 
         public override void OnStateEnter()
         {
-            Debug.Log("Finding Food");
+            //Debug.Log("Finding Food");
             Find();
         }
 
@@ -69,15 +69,17 @@ namespace AnimalManagement{
                 {
                     NotFoundFood();
                 }
-                if(closestFood is Plant){
-                    Plant plantFood = closestFood as Plant;
-                    if(!plantFood.isActive)
-                    {
-                        NotFoundFood();
+                else{
+                    if(closestFood is Plant){
+                        Plant plantFood = closestFood as Plant;
+                        if(!plantFood.isActive)
+                        {
+                            NotFoundFood();
+                        }
                     }
+                    SetDestination();
+                    animal.FoodTarget = closestFood;
                 }
-                SetDestination();
-                animal.FoodTarget = closestFood;
             }else
             {
                 NotFoundFood();
@@ -88,9 +90,9 @@ namespace AnimalManagement{
         {  
             LivingBeing closest = objsFound[0].gameObject.GetComponent<LivingBeing>();
 
-            if (closest == animal)
+            if (GameObject.ReferenceEquals(animal.gameObject, objsFound[0].gameObject))
             {
-                closest = objsFound[1].gameObject.GetComponent<LivingBeing>();
+                closest = objsFound[1].gameObject.GetComponent<Animal>();
             }
 
             float lowestDist = animal.MaxViewDistance;

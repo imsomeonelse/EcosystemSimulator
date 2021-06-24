@@ -27,9 +27,28 @@ namespace AnimalManagement{
         public float SensoryDistance;
 
         //Lifespan things
-        public float LifespanTime;
-        public float StarvationTime;
-        public float DehydrationTime;
+        public float BabyTime;
+        public float AgeTime;
+
+        public bool IsBaby;
+
+        public MeterBar AgeBar;
+
+        public float LifespanRemaining;
+
+        //Mating things
+        public Gender Gender;
+
+        public float MateUrgency;
+        public float MateTime;
+        public float NeedToMatePercentage = 100;
+
+        public bool LookForMate;
+        public bool IsWaitingForMate;
+
+        public Animal CurrentMate;
+
+        public MeterBar MateBar;
 
         //Food things
         public string FoodSource;
@@ -60,15 +79,14 @@ namespace AnimalManagement{
         //Animation things
         public Animator[] anim;
 
-        //Mating things
-        public Gender Gender;
-
 
         public Animal(string species){
             Species = species;
         }
 
-        public void Init (Coord coord, float baseSpeed, int maxViewDistance, float hungerTime, float thirstTime, float mateUrgency) 
+        public void Init (
+            Coord coord, float baseSpeed, int maxViewDistance, float hungerTime, float thirstTime, 
+            float mateUrgency, float mateTime, float lifespan, float babyTime, bool isBaby) 
         {
             base.Init(coord);
 
@@ -82,9 +100,7 @@ namespace AnimalManagement{
 
             CreateGender();
 
-            this.LookForFood = true;
-            this.LookForWater = true;
-            CreateNeeds(hungerTime, thirstTime, mateUrgency);
+            CreateNeeds(hungerTime, thirstTime, mateUrgency, mateTime, lifespan, babyTime, isBaby);
              
             SetState(new Roam(this));
         }
@@ -108,7 +124,8 @@ namespace AnimalManagement{
             }
         }
 
-        public void CreateNeeds(float hungerTime, float thirstTime, float mateUrgency)
+        public void CreateNeeds(
+            float hungerTime, float thirstTime, float mateUrgency, float mateTime, float lifespan, float babyTime, bool isBaby)
         {
             this.HungerTime = hungerTime;
             this.ThirstTime = thirstTime;
@@ -116,8 +133,32 @@ namespace AnimalManagement{
             this.HungerBar = transform.Find("UI/HungerBar").GetComponent<MeterBar>();
             this.ThirstBar = transform.Find("UI/ThirstBar").GetComponent<MeterBar>();
 
-            HungerBar.SetMaxValue(this.HungerTime);
-            ThirstBar.SetMaxValue(this.ThirstTime);
+            this.HungerBar.SetMaxValue(this.HungerTime);
+            this.ThirstBar.SetMaxValue(this.ThirstTime);
+
+            this.LookForFood = true;
+            this.LookForWater = true;
+
+            this.IsBaby = isBaby;
+
+            if(!isBaby)
+            {
+                babyTime = 0;
+                this.LookForMate = true;
+            }
+            this.IsWaitingForMate = false;
+
+            this.AgeTime = babyTime + lifespan;
+            this.AgeBar = transform.Find("UI/AgeBar").GetComponent<MeterBar>();
+            this.AgeBar.SetMaxValue(this.AgeTime);
+
+            GameObject icon = transform.Find("UI/HeartIcon").gameObject;
+            icon.SetActive(false);
+
+            this.MateUrgency = mateUrgency;
+            this.MateTime = mateTime;
+            this.MateBar = transform.Find("UI/MateBar").GetComponent<MeterBar>();
+            this.MateBar.SetMaxValue(this.MateTime);
         }
 
         public void Update()
@@ -131,10 +172,24 @@ namespace AnimalManagement{
         {
             this.HungerPercentage = this.HungerBar.GetValue() * 100 / this.HungerTime;
             this.ThirstPercentage = this.ThirstBar.GetValue() * 100 / this.ThirstTime;
+            this.LifespanRemaining = this.AgeTime - (this.AgeBar.GetValue() * 100 / this.AgeTime);
+            this.NeedToMatePercentage = this.MateBar.GetValue() * 100 / this.MateTime;
+
+            if(
+                this.NeedToMatePercentage > this.MateUrgency && 
+                CurrentState is Roam && 
+                this.LookForMate && 
+                !this.IsWaitingForMate && 
+                this.ThirstPercentage < 50 && 
+                this.HungerPercentage < 50
+            )
+            {
+                SetState(new FindMate(this));
+            }
 
             if(this.ThirstPercentage > this.HungerPercentage)
             {
-                if(this.ThirstPercentage > 15 && (CurrentState is Roam || CurrentState is Wait) && this.LookForWater)
+                if(this.ThirstPercentage > 15 && CurrentState is Roam && this.LookForWater)
                 {
                     SetState(new FindWater(this));
                 }
@@ -142,13 +197,13 @@ namespace AnimalManagement{
             }
             else
             {
-                if(this.HungerPercentage > 10 && (CurrentState is Roam || CurrentState is Wait) && LookForFood)
+                if(this.HungerPercentage > 10 && CurrentState is Roam && LookForFood)
                 {
                     SetState(new FindFood(this));
                 }
             }
 
-            if(this.HungerPercentage >= 100 || this.ThirstPercentage >= 100)
+            if(this.HungerPercentage >= 100 || this.ThirstPercentage >= 100 || this.LifespanRemaining <= 0)
             {
                 SetState(new Die(this));
             }
@@ -219,6 +274,32 @@ namespace AnimalManagement{
             this.LookForWater = true;
         }
 
+        public void ReachedMate()
+        {   
+            SetState(new Mate(this));
+        }
+
+        public void ActivateHeart()
+        {
+            GameObject icon = transform.Find("UI/HeartIcon").gameObject;
+            icon.SetActive(true);
+        }
+
+        IEnumerator NotFoundMate()
+        {
+            float waitLength = Random.Range(1f, 2.9f);
+            SetState(new Roam(this));
+            yield return new WaitForSeconds(waitLength);
+            this.LookForMate = true;
+        }
+
+        public void WaitForMate()
+        {
+            ActivateHeart();
+            this.IsWaitingForMate = true;
+            SetState(new Wait(this));
+        }
+
         public void ReachedDestination()
         {
             if(CurrentState is FindFood)
@@ -229,6 +310,10 @@ namespace AnimalManagement{
             if(CurrentState is FindWater){
                 this.LookForWater = false;
                 StartCoroutine(NotFoundWater());
+            }
+            if(CurrentState is FindMate){
+                this.LookForMate = false;
+                StartCoroutine(NotFoundMate());
             }
             else
             {

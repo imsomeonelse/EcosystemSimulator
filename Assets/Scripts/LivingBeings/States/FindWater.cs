@@ -16,7 +16,7 @@ namespace AnimalManagement{
 
         public override void OnStateEnter()
         {
-            Debug.Log("Finding Water");
+            //Debug.Log("Finding Water");
             Find();
         }
 

@@ -15,7 +15,7 @@ namespace AnimalManagement{
 
         public override void OnStateEnter()
         {
-            Debug.Log("Roaming");
+            //Debug.Log("Roaming");
             SetDestination();
         }
 

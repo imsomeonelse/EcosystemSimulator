@@ -7,7 +7,7 @@ namespace AnimalManagement{
     {
         public Die(Animal animal) : base(animal)
         {
-            Debug.Log("Dying");
+            //Debug.Log("Dying");
         }
 
         public override void OnStateEnter()
