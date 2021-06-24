@@ -8,9 +8,9 @@ public class Counter : MonoBehaviour
     TextMeshProUGUI text;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        text = gameObject.GetComponent<TextMeshProUGUI>();
+        text = GetComponent<TextMeshProUGUI>();
     }
 
     public void UpdateValue(string value)

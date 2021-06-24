@@ -65,6 +65,10 @@ namespace AnimalManagement{
             if(hitColliders.Length > 1)
             {
                 closestFood = FindClosest(hitColliders);
+                if(closestFood == null)
+                {
+                    NotFoundFood();
+                }
                 if(closestFood is Plant){
                     Plant plantFood = closestFood as Plant;
                     if(!plantFood.isActive)

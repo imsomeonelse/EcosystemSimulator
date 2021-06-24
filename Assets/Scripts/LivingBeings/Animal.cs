@@ -113,8 +113,8 @@ namespace AnimalManagement{
             this.HungerTime = hungerTime;
             this.ThirstTime = thirstTime;
 
-            this.HungerBar = GetComponentsInChildren<MeterBar>()[0];
-            this.ThirstBar = GetComponentsInChildren<MeterBar>()[1];
+            this.HungerBar = transform.Find("UI/HungerBar").GetComponent<MeterBar>();
+            this.ThirstBar = transform.Find("UI/ThirstBar").GetComponent<MeterBar>();
 
             HungerBar.SetMaxValue(this.HungerTime);
             ThirstBar.SetMaxValue(this.ThirstTime);
