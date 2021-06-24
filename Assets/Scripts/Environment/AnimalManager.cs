@@ -55,6 +55,7 @@ namespace AnimalManagement{
         public float ThirstTime;
         public float MateTime;
         public float MateUrgency;
+        public int NumBabyAverage;
     }
 
     [System.Serializable]
@@ -109,6 +110,7 @@ namespace AnimalManagement{
         public float ThirstTime;
         public float MateTime;
         public float MateUrgency;
+        public int NumBabyAverage;
     }
 
     [System.Serializable]
@@ -152,7 +154,7 @@ namespace AnimalManagement{
                         Prey preyScript = newPrey.AddComponent<Prey>();
                         preyScript.Init(
                             coord, pMan.Species, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
-                            pMan.MateUrgency, pMan.MateTime, pMan.AdultTime, pMan.BabyTime, false);
+                            pMan.MateUrgency, pMan.MateTime, pMan.AdultTime, pMan.BabyTime, false, pMan.NumBabyAverage);
 
                         _AnimalList.Add(preyScript);
                     }
@@ -177,7 +179,7 @@ namespace AnimalManagement{
                         Predator predatorScript = newPredator.AddComponent<Predator>();
                         predatorScript.Init(
                             coord, pMan.Species, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
-                            pMan.MateUrgency, pMan.MateTime, pMan.AdultTime, pMan.BabyTime, false);
+                            pMan.MateUrgency, pMan.MateTime, pMan.AdultTime, pMan.BabyTime, false, pMan.NumBabyAverage);
                             
                         _AnimalList.Add(predatorScript);
                     }
@@ -187,20 +189,24 @@ namespace AnimalManagement{
             UpdateUI();
         }
 
-        public void CreateNew(Type type, string species, Coord coord)
+        public void CreateNew(Type type, string species, Coord coord, int quantity)
         {
             if(type == Type.Prey)
             {
                 foreach(PreyManager pMan in _Prey)
                 {
-                    Debug.Log(pMan.Species);
                     if(pMan.Species == species)
                     {
-                        GameObject newPrey =  Instantiate(pMan.Prefab);
-                        Prey preyScript = newPrey.AddComponent<Prey>();
-                        preyScript.Init(
-                            coord, pMan.Species, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
-                            pMan.MateUrgency, pMan.MateTime, pMan.AdultTime, pMan.BabyTime, true);
+                        for(int i = 0; i < quantity; i++)
+                        {
+                            GameObject newPrey =  Instantiate(pMan.Prefab);
+                            Prey preyScript = newPrey.AddComponent<Prey>();
+                            preyScript.Init(
+                                coord, pMan.Species, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
+                                pMan.MateUrgency, pMan.MateTime, pMan.AdultTime, pMan.BabyTime, true, pMan.NumBabyAverage);
+
+                            AddPrey();
+                        }
                     }
                 }
             }
@@ -210,11 +216,16 @@ namespace AnimalManagement{
                 {
                     if(pMan.Species == species)
                     {
-                        GameObject newPredator =  Instantiate(pMan.Prefab);
-                        Predator predatorScript = newPredator.AddComponent<Predator>();
-                        predatorScript.Init(
-                            coord, pMan.Species, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
-                            pMan.MateUrgency, pMan.MateTime, pMan.AdultTime, pMan.BabyTime, true);
+                        for(int i = 0; i < quantity; i++)
+                        {
+                            GameObject newPredator =  Instantiate(pMan.Prefab);
+                            Predator predatorScript = newPredator.AddComponent<Predator>();
+                            predatorScript.Init(
+                                coord, pMan.Species, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
+                                pMan.MateUrgency, pMan.MateTime, pMan.AdultTime, pMan.BabyTime, true, pMan.NumBabyAverage);
+
+                            AddPredator();
+                        }
                     }
                 }
             }
@@ -224,6 +235,18 @@ namespace AnimalManagement{
         {
             PredatorCounter.UpdateValue(this.NumPredators.ToString());
             PreyCounter.UpdateValue(this.NumPrey.ToString());
+        }
+
+        public void AddPredator()
+        {
+            this.NumPredators += 1; 
+            UpdateUI();
+        }
+
+        public void AddPrey()
+        {
+            this.NumPrey += 1;  
+            UpdateUI();
         }
 
         public void RemovePredator()

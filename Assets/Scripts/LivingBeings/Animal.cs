@@ -51,6 +51,8 @@ namespace AnimalManagement{
 
         public MeterBar MateBar;
 
+        public int BabyAverage;
+
         //Food things
         public string FoodSource;
 
@@ -82,7 +84,7 @@ namespace AnimalManagement{
 
         public void Init (
             Coord coord, string species, float baseSpeed, int maxViewDistance, float hungerTime, float thirstTime, 
-            float mateUrgency, float mateTime, float lifespan, float babyTime, bool isBaby) 
+            float mateUrgency, float mateTime, float lifespan, float babyTime, bool isBaby, int babyAverage) 
         {
             base.Init(coord);
 
@@ -109,7 +111,7 @@ namespace AnimalManagement{
                 MakeIntoBaby();
             }
 
-            CreateGender();
+            CreateGender(babyAverage);
 
             CreateNeeds(hungerTime, thirstTime, mateUrgency, mateTime, lifespan, babyTime, isBaby);
              
@@ -121,7 +123,7 @@ namespace AnimalManagement{
             transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         }
 
-        public void CreateGender()
+        public void CreateGender(int babyAverage)
         {
             int gender = Random.Range(0, 2);
             
@@ -138,6 +140,8 @@ namespace AnimalManagement{
             {
                 femaleIcon.SetActive(false);
             }
+
+            this.BabyAverage = babyAverage;
         }
 
         public void CreateNeeds(
@@ -299,7 +303,8 @@ namespace AnimalManagement{
         public void HaveBaby()
         {
             AnimalManager aM = Object.FindObjectOfType<AnimalManager>();
-            aM.CreateNew(this.Type, this.Species, this.coord);
+            int babyNum = (this.BabyAverage + this.CurrentMate.BabyAverage)/2;
+            aM.CreateNew(this.Type, this.Species, this.coord, babyNum);
         }
 
         public void ReachedMate()
