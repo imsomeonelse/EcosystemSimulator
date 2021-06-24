@@ -48,7 +48,7 @@ namespace AnimalManagement{
                 else
                 {
                     animal.ActivateHeart();
-                    closestMate.WaitForMate();
+                    closestMate.WaitForMate(animal);
                     SetDestination();
                     animal.CurrentMate = closestMate;
                 }
@@ -73,14 +73,17 @@ namespace AnimalManagement{
             {
                 float dist = Vector3.Distance(objsFound[i].transform.position, animal.transform.position);
 
+                GameObject temp = objsFound[i].gameObject;
+
                 if (dist < lowestDist && 
-                    objsFound[i].gameObject.layer == LayerMask.NameToLayer("Animal") && 
-                    !GameObject.ReferenceEquals(animal.gameObject, objsFound[i].gameObject) &&
-                    objsFound[i].gameObject.GetComponent<Animal>().Gender != animal.Gender
+                    temp.layer == LayerMask.NameToLayer("Animal") && 
+                    !GameObject.ReferenceEquals(animal.gameObject, temp) &&
+                    temp.GetComponent<Animal>().Gender != animal.Gender &&
+                    !temp.GetComponent<Animal>().FoundMate
                 )
                 {
                     lowestDist = dist;
-                    closest = objsFound[i].gameObject.GetComponent<Animal>();
+                    closest = temp.GetComponent<Animal>();
                 }
             }
 

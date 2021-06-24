@@ -47,6 +47,9 @@ namespace AnimalManagement{
             slider = GetComponent<Slider>();
             slider.maxValue = maxVal;
             startingTime = Time.time;
+            prevTime = Time.time;
+            currTime = Time.time;
+
         }
 
         public void DecreaseValue(float val)

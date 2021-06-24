@@ -148,9 +148,10 @@ namespace AnimalManagement{
                         spawnCoords.RemoveAt(spawnCoordIndex);
 
                         GameObject newPrey =  Instantiate(pMan.Prefab);
+                        newPrey.name = pMan.Species + i.ToString();
                         Prey preyScript = newPrey.AddComponent<Prey>();
                         preyScript.Init(
-                            coord, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
+                            coord, pMan.Species, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
                             pMan.MateUrgency, pMan.MateTime, pMan.AdultTime, pMan.BabyTime, false);
 
                         _AnimalList.Add(preyScript);
@@ -172,9 +173,10 @@ namespace AnimalManagement{
                         spawnCoords.RemoveAt(spawnCoordIndex);
 
                         GameObject newPredator =  Instantiate(pMan.Prefab);
+                        newPredator.name = pMan.Species + i.ToString();
                         Predator predatorScript = newPredator.AddComponent<Predator>();
                         predatorScript.Init(
-                            coord, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
+                            coord, pMan.Species, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
                             pMan.MateUrgency, pMan.MateTime, pMan.AdultTime, pMan.BabyTime, false);
                             
                         _AnimalList.Add(predatorScript);
@@ -185,9 +187,37 @@ namespace AnimalManagement{
             UpdateUI();
         }
 
-        public void CreateNew()
+        public void CreateNew(Type type, string species, Coord coord)
         {
-
+            if(type == Type.Prey)
+            {
+                foreach(PreyManager pMan in _Prey)
+                {
+                    Debug.Log(pMan.Species);
+                    if(pMan.Species == species)
+                    {
+                        GameObject newPrey =  Instantiate(pMan.Prefab);
+                        Prey preyScript = newPrey.AddComponent<Prey>();
+                        preyScript.Init(
+                            coord, pMan.Species, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
+                            pMan.MateUrgency, pMan.MateTime, pMan.AdultTime, pMan.BabyTime, true);
+                    }
+                }
+            }
+            else
+            {
+                foreach(PredatorManager pMan in _Predator)
+                {
+                    if(pMan.Species == species)
+                    {
+                        GameObject newPredator =  Instantiate(pMan.Prefab);
+                        Predator predatorScript = newPredator.AddComponent<Predator>();
+                        predatorScript.Init(
+                            coord, pMan.Species, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
+                            pMan.MateUrgency, pMan.MateTime, pMan.AdultTime, pMan.BabyTime, true);
+                    }
+                }
+            }
         }
 
         public void UpdateUI()

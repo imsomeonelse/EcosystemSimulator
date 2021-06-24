@@ -5,7 +5,7 @@ using UnityEngine;
 namespace AnimalManagement{
     public class Prey : Animal
     {
-        public Prey(string species) : base(species)
+        public Prey() : base()
         {
 
         }

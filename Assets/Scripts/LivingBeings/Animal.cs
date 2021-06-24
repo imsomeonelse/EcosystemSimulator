@@ -45,6 +45,7 @@ namespace AnimalManagement{
 
         public bool LookForMate;
         public bool IsWaitingForMate;
+        public bool FoundMate;
 
         public Animal CurrentMate;
 
@@ -79,16 +80,20 @@ namespace AnimalManagement{
         //Animation things
         public Animator[] anim;
 
-
-        public Animal(string species){
-            Species = species;
-        }
-
         public void Init (
-            Coord coord, float baseSpeed, int maxViewDistance, float hungerTime, float thirstTime, 
+            Coord coord, string species, float baseSpeed, int maxViewDistance, float hungerTime, float thirstTime, 
             float mateUrgency, float mateTime, float lifespan, float babyTime, bool isBaby) 
         {
             base.Init(coord);
+
+            if(this is Predator)
+            {
+                this.Type = Type.Predator;
+            }
+            else{
+                this.Type = Type.Prey;
+            }
+            this.Species = species;
 
             anim = GetComponentsInChildren<Animator>();
 
@@ -98,11 +103,22 @@ namespace AnimalManagement{
 
             this.MaxViewDistance = maxViewDistance;
 
+            this.IsBaby = isBaby;
+            if(this.IsBaby)
+            {
+                MakeIntoBaby();
+            }
+
             CreateGender();
 
             CreateNeeds(hungerTime, thirstTime, mateUrgency, mateTime, lifespan, babyTime, isBaby);
              
             SetState(new Roam(this));
+        }
+
+        public void MakeIntoBaby()
+        {
+            transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         }
 
         public void CreateGender()
@@ -242,12 +258,6 @@ namespace AnimalManagement{
             }
         }
 
-        public void Drink()
-        {
-            this.ThirstBar.DecreaseValue((100 * this.ThirstTime) / 100);
-            SetState(new Roam(this));
-        }
-
         public void ReachedFood()
         {   
             SetState(new Eat(this));
@@ -259,6 +269,12 @@ namespace AnimalManagement{
             SetState(new Roam(this));
             yield return new WaitForSeconds(waitLength);
             this.LookForFood = true;
+        }
+
+        public void Drink()
+        {
+            this.ThirstBar.DecreaseValue((100 * this.ThirstTime) / 100);
+            SetState(new Roam(this));
         }
 
         public void ReachedWater()
@@ -274,8 +290,27 @@ namespace AnimalManagement{
             this.LookForWater = true;
         }
 
+        public void FinishMating()
+        {
+            this.MateBar.DecreaseValue((100 * this.MateTime) / 100);
+            SetState(new Roam(this));
+        }
+
+        public void HaveBaby()
+        {
+            AnimalManager aM = Object.FindObjectOfType<AnimalManager>();
+            aM.CreateNew(this.Type, this.Species, this.coord);
+        }
+
         public void ReachedMate()
         {   
+            StartMating();
+            this.CurrentMate.StartMating();
+        }
+
+        public void StartMating()
+        {
+            this.LookForMate = false;
             SetState(new Mate(this));
         }
 
@@ -283,6 +318,13 @@ namespace AnimalManagement{
         {
             GameObject icon = transform.Find("UI/HeartIcon").gameObject;
             icon.SetActive(true);
+            this.FoundMate = true;
+        }
+
+        public void DeactivateHeart()
+        {
+            GameObject icon = transform.Find("UI/HeartIcon").gameObject;
+            icon.SetActive(false);
         }
 
         IEnumerator NotFoundMate()
@@ -293,10 +335,12 @@ namespace AnimalManagement{
             this.LookForMate = true;
         }
 
-        public void WaitForMate()
+        public void WaitForMate(Animal mate)
         {
             ActivateHeart();
             this.IsWaitingForMate = true;
+            this.LookForMate = false;
+            this.CurrentMate = mate;
             SetState(new Wait(this));
         }
 
