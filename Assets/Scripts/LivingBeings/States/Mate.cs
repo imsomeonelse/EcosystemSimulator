@@ -20,7 +20,10 @@ namespace AnimalManagement{
 
             for(int i = 0; i < animal.anim.Length; i++)
             {
-                animal.anim[i].SetBool("isMating", true);
+                if(animal.anim[i] != null)
+                {
+                    animal.anim[i].SetBool("isMating", true);
+                }
             }
         }
 
@@ -44,7 +47,10 @@ namespace AnimalManagement{
 
             for(int i = 0; i < animal.anim.Length; i++)
             {
-                animal.anim[i].SetBool("isMating", false);
+                if(animal.anim[i] != null)
+                {
+                    animal.anim[i].SetBool("isMating", false);
+                }
             }
         }
     }
