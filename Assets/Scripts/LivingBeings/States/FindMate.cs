@@ -10,7 +10,7 @@ namespace AnimalManagement{
 
         public FindMate(Animal animal) : base(animal)
         {
-            Debug.Log("Finding mate");
+            //Debug.Log("Finding mate");
         }
 
         public override void OnStateEnter()
@@ -32,6 +32,11 @@ namespace AnimalManagement{
                         ReachedMate();
                     }
                 }
+            }
+
+            if(closestMate == null)
+            {
+                NotFoundMate();
             }
         }
 
@@ -80,7 +85,8 @@ namespace AnimalManagement{
                     !GameObject.ReferenceEquals(animal.gameObject, temp) &&
                     temp.GetComponent<Animal>().Gender != animal.Gender &&
                     !temp.GetComponent<Animal>().FoundMate &&
-                    animal.Species == temp.GetComponent<Animal>().Species
+                    animal.Species == temp.GetComponent<Animal>().Species &&
+                    !temp.GetComponent<Animal>().IsBaby
                 )
                 {
                     lowestDist = dist;

@@ -10,7 +10,7 @@ namespace AnimalManagement{
 
         public Mate(Animal animal) : base(animal)
         {
-            Debug.Log(animal + " is Mating");
+            //Debug.Log(animal + " is Mating");
         }
 
         public override void OnStateEnter()

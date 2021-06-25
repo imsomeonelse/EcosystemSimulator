@@ -128,9 +128,11 @@ namespace AnimalManagement{
 
         public Counter PredatorCounter;
         public Counter PreyCounter;
+        public Counter DeathCounter;
 
         private int NumPredators = 0;
         private int NumPrey = 0;
+        private int NumDeaths = 0;
 
         public void SpawnInitialPopulation(List<Coord> walkableCoords)
         {
@@ -235,30 +237,37 @@ namespace AnimalManagement{
         {
             PredatorCounter.UpdateValue(this.NumPredators.ToString());
             PreyCounter.UpdateValue(this.NumPrey.ToString());
+            DeathCounter.UpdateValue(this.NumDeaths.ToString());
         }
 
         public void AddPredator()
         {
             this.NumPredators += 1; 
-            UpdateUI();
+            PredatorCounter.UpdateValue(this.NumPredators.ToString());
         }
 
         public void AddPrey()
         {
             this.NumPrey += 1;  
-            UpdateUI();
+            PreyCounter.UpdateValue(this.NumPrey.ToString());
         }
 
         public void RemovePredator()
         {
             this.NumPredators -= 1; 
-            UpdateUI();
+            PredatorCounter.UpdateValue(this.NumPredators.ToString());
         }
 
         public void RemovePrey()
         {
             this.NumPrey -= 1;  
-            UpdateUI();
+            PreyCounter.UpdateValue(this.NumPrey.ToString());
+        }
+
+        public void AddDeath()
+        {
+            this.NumDeaths += 1;
+            DeathCounter.UpdateValue(this.NumDeaths.ToString());
         }
     }
 }

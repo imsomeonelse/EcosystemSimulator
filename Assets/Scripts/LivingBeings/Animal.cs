@@ -96,6 +96,7 @@ namespace AnimalManagement{
                 this.Type = Type.Prey;
             }
             this.Species = species;
+            this.IsBaby = isBaby;
 
             anim = GetComponentsInChildren<Animator>();
 
@@ -105,15 +106,20 @@ namespace AnimalManagement{
 
             this.MaxViewDistance = maxViewDistance;
 
-            this.IsBaby = isBaby;
-            if(this.IsBaby)
-            {
-                MakeIntoBaby();
-            }
-
             CreateGender(babyAverage);
 
-            CreateNeeds(hungerTime, thirstTime, mateUrgency, mateTime, lifespan, babyTime, isBaby);
+            CreateNeeds(hungerTime, thirstTime, mateUrgency, mateTime, lifespan, isBaby);
+
+            if(!this.IsBaby)
+            {
+                this.BabyTime = 0;
+                this.LookForMate = true;
+            }
+            if(this.IsBaby)
+            {
+                this.BabyTime = babyTime;
+                MakeIntoBaby();
+            }
              
             SetState(new Roam(this));
         }
@@ -121,6 +127,24 @@ namespace AnimalManagement{
         public void MakeIntoBaby()
         {
             transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            this.BaseSpeed = this.BaseSpeed - (this.BaseSpeed * .20f);
+            this.MaxViewDistance = (int) this.MaxViewDistance - (int) (this.MaxViewDistance * .10f);
+            this.ThirstTime = this.ThirstTime - (this.ThirstTime * .10f);
+            this.HungerTime = this.HungerTime - (this.HungerTime * .10f);
+            StartCoroutine(GrowUp());
+        }
+
+       IEnumerator GrowUp()
+        {
+            yield return new WaitForSeconds(this.BabyTime);
+
+            this.LookForMate = true;
+            transform.localScale = new Vector3(1f, 1f, 1f);
+            this.BaseSpeed = (this.BaseSpeed * 100) / 90;
+            this.MaxViewDistance = (int) (this.MaxViewDistance * 100) / 90;
+            this.ThirstTime = (this.ThirstTime * 100) / 90;
+            this.HungerTime = (this.ThirstTime * 100) / 90;
+            this.MateBar.SetMaxValue(this.MateTime);
         }
 
         public void CreateGender(int babyAverage)
@@ -145,7 +169,7 @@ namespace AnimalManagement{
         }
 
         public void CreateNeeds(
-            float hungerTime, float thirstTime, float mateUrgency, float mateTime, float lifespan, float babyTime, bool isBaby)
+            float hungerTime, float thirstTime, float mateUrgency, float mateTime, float lifespan, bool isBaby)
         {
             this.HungerTime = hungerTime;
             this.ThirstTime = thirstTime;
@@ -160,15 +184,9 @@ namespace AnimalManagement{
             this.LookForWater = true;
 
             this.IsBaby = isBaby;
-
-            if(!isBaby)
-            {
-                babyTime = 0;
-                this.LookForMate = true;
-            }
             this.IsWaitingForMate = false;
 
-            this.AgeTime = babyTime + lifespan;
+            this.AgeTime = this.BabyTime + lifespan;
             this.AgeBar = transform.Find("UI/AgeBar").GetComponent<MeterBar>();
             this.AgeBar.SetMaxValue(this.AgeTime);
 
@@ -178,7 +196,10 @@ namespace AnimalManagement{
             this.MateUrgency = mateUrgency;
             this.MateTime = mateTime;
             this.MateBar = transform.Find("UI/MateBar").GetComponent<MeterBar>();
-            this.MateBar.SetMaxValue(this.MateTime);
+            if(!this.IsBaby)
+            {
+                this.MateBar.SetMaxValue(this.MateTime);
+            }
         }
 
         public void Update()
