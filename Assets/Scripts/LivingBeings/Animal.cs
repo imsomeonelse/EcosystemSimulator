@@ -355,6 +355,7 @@ namespace AnimalManagement{
 
         IEnumerator NotFoundMate()
         {
+            DeactivateHeart();
             float waitLength = Random.Range(1f, 2.9f);
             SetState(new Roam(this));
             yield return new WaitForSeconds(waitLength);
