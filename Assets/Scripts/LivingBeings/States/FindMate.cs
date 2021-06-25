@@ -79,7 +79,8 @@ namespace AnimalManagement{
                     temp.layer == LayerMask.NameToLayer("Animal") && 
                     !GameObject.ReferenceEquals(animal.gameObject, temp) &&
                     temp.GetComponent<Animal>().Gender != animal.Gender &&
-                    !temp.GetComponent<Animal>().FoundMate
+                    !temp.GetComponent<Animal>().FoundMate &&
+                    animal.Species == temp.GetComponent<Animal>().Species
                 )
                 {
                     lowestDist = dist;
