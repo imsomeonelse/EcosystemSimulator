@@ -28,7 +28,6 @@ namespace AnimalManagement{
                     if(!animal.meshAgent.hasPath || animal.meshAgent.velocity.sqrMagnitude == 0f)
                     {
                         animal.coord = closestMate.coord;
-                        
                         ReachedMate();
                     }
                 }
@@ -65,12 +64,7 @@ namespace AnimalManagement{
 
         private Animal FindClosest(Collider[] objsFound)
         {  
-            Animal closest = objsFound[0].gameObject.GetComponent<Animal>();
-
-            if (GameObject.ReferenceEquals(animal.gameObject, objsFound[0].gameObject))
-            {
-                closest = objsFound[1].gameObject.GetComponent<Animal>();
-            }
+            Animal closest = null;
 
             float lowestDist = animal.MaxViewDistance;
 

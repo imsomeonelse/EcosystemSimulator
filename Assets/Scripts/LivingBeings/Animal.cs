@@ -124,6 +124,48 @@ namespace AnimalManagement{
             SetState(new Roam(this));
         }
 
+        public void Init (
+            Vector3 position, string species, float baseSpeed, int maxViewDistance, float hungerTime, float thirstTime, 
+            float mateUrgency, float mateTime, float lifespan, float babyTime, bool isBaby, int babyAverage) 
+        {
+            transform.position = position;
+
+            if(this is Predator)
+            {
+                this.Type = Type.Predator;
+            }
+            else{
+                this.Type = Type.Prey;
+            }
+            this.Species = species;
+            this.IsBaby = isBaby;
+
+            anim = GetComponentsInChildren<Animator>();
+
+            meshAgent = GetComponent<NavMeshAgent>();
+            this.BaseSpeed = baseSpeed;
+            meshAgent.speed = BaseSpeed;
+
+            this.MaxViewDistance = maxViewDistance;
+
+            CreateGender(babyAverage);
+
+            CreateNeeds(hungerTime, thirstTime, mateUrgency, mateTime, lifespan, isBaby);
+
+            if(!this.IsBaby)
+            {
+                this.BabyTime = 0;
+                this.LookForMate = true;
+            }
+            if(this.IsBaby)
+            {
+                this.BabyTime = babyTime;
+                MakeIntoBaby();
+            }
+             
+            SetState(new Roam(this));
+        }
+
         public void MakeIntoBaby()
         {
             transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
@@ -139,6 +181,7 @@ namespace AnimalManagement{
             yield return new WaitForSeconds(this.BabyTime);
 
             this.LookForMate = true;
+            this.IsBaby = false;
             transform.localScale = new Vector3(1f, 1f, 1f);
             this.BaseSpeed = (this.BaseSpeed * 100) / 90;
             this.MaxViewDistance = (int) (this.MaxViewDistance * 100) / 90;
@@ -318,6 +361,10 @@ namespace AnimalManagement{
         public void FinishMating()
         {
             this.MateBar.DecreaseValue((100 * this.MateTime) / 100);
+            this.CurrentMate = null;
+            this.LookForMate = true;
+            this.FoundMate = false;
+            this.IsWaitingForMate = false;
             SetState(new Roam(this));
         }
 
@@ -325,7 +372,7 @@ namespace AnimalManagement{
         {
             AnimalManager aM = Object.FindObjectOfType<AnimalManager>();
             int babyNum = (this.BabyAverage + this.CurrentMate.BabyAverage)/2;
-            aM.CreateNew(this.Type, this.Species, this.coord, babyNum);
+            aM.CreateNew(this.Type, this.Species, this.coord, babyNum, transform.position);
         }
 
         public void ReachedMate()

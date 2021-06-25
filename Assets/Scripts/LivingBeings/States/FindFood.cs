@@ -88,12 +88,7 @@ namespace AnimalManagement{
 
         private LivingBeing FindClosest(Collider[] objsFound)
         {  
-            LivingBeing closest = objsFound[0].gameObject.GetComponent<LivingBeing>();
-
-            if (GameObject.ReferenceEquals(animal.gameObject, objsFound[0].gameObject))
-            {
-                closest = objsFound[1].gameObject.GetComponent<Animal>();
-            }
+            LivingBeing closest = null;
 
             float lowestDist = animal.MaxViewDistance;
 

@@ -191,7 +191,7 @@ namespace AnimalManagement{
             UpdateUI();
         }
 
-        public void CreateNew(Type type, string species, Coord coord, int quantity)
+        public void CreateNew(Type type, string species, Coord coord, int quantity, Vector3 position)
         {
             if(type == Type.Prey)
             {
@@ -204,7 +204,7 @@ namespace AnimalManagement{
                             GameObject newPrey =  Instantiate(pMan.Prefab);
                             Prey preyScript = newPrey.AddComponent<Prey>();
                             preyScript.Init(
-                                coord, pMan.Species, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
+                                position, pMan.Species, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
                                 pMan.MateUrgency, pMan.MateTime, pMan.AdultTime, pMan.BabyTime, true, pMan.NumBabyAverage);
 
                             AddPrey();
@@ -223,7 +223,7 @@ namespace AnimalManagement{
                             GameObject newPredator =  Instantiate(pMan.Prefab);
                             Predator predatorScript = newPredator.AddComponent<Predator>();
                             predatorScript.Init(
-                                coord, pMan.Species, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
+                                position, pMan.Species, pMan.BaseSpeed, pMan.MaxViewDistance, pMan.HungerTime, pMan.ThirstTime, 
                                 pMan.MateUrgency, pMan.MateTime, pMan.AdultTime, pMan.BabyTime, true, pMan.NumBabyAverage);
 
                             AddPredator();
