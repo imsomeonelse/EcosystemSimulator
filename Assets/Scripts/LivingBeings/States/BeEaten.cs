@@ -15,6 +15,7 @@ namespace AnimalManagement{
         public override void OnStateEnter()
         {
             animal.StateText.UpdateText("BEING EATEN");
+            Debug.Log(animal + "IS BEING EATEN");
 
             for(int i = 0; i < animal.anim.Length; i++)
             {
