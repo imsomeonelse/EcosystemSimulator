@@ -15,6 +15,7 @@ namespace AnimalManagement{
 
         public override void OnStateEnter()
         {
+            animal.StateText.UpdateText("FINDING MATE");
             Find();
         }
 
@@ -28,7 +29,15 @@ namespace AnimalManagement{
                     if(!animal.meshAgent.hasPath || animal.meshAgent.velocity.sqrMagnitude == 0f)
                     {
                         animal.coord = closestMate.coord;
-                        ReachedMate();
+                        float dist = Vector3.Distance(closestMate.transform.position, animal.transform.position);
+                        if(dist <= 10)
+                        {
+                            ReachedMate();
+                        }
+                        else
+                        {
+                            NotFoundMate();
+                        }
                     }
                 }
             }

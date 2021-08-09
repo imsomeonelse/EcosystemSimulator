@@ -16,6 +16,8 @@ namespace AnimalManagement{
         public override void OnStateEnter()
         {
             //Debug.Log("Drinking");
+            animal.StateText.UpdateText("DRINKING");
+            
             targetTime = Time.time + drinkTime;
 
             for(int i = 0; i < animal.anim.Length; i++)

@@ -16,7 +16,7 @@ namespace AnimalManagement{
 
         public override void OnStateEnter()
         {
-            //Debug.Log("Finding Water");
+            animal.StateText.UpdateText("FINDING WATER");
             Find();
         }
 
@@ -42,6 +42,7 @@ namespace AnimalManagement{
         {
             closestWater = EnvironmentManager.GetClosestWater(animal.transform.position, animal.MaxViewDistance);
             if(closestWater.x != 0 && closestWater.y != 0){
+                animal.StateText.UpdateText("WALKING TO WATER");
                 SetDestination();
                 animal.WaterTarget = closestWater;
             }

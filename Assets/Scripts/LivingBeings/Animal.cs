@@ -17,16 +17,15 @@ namespace AnimalManagement{
 
     public class Animal : LivingBeing
     {
+        // General attributes
         public string Species;
         public Type Type;
 
-        public State CurrentState;
-
-        //General parameters
+        // General parameters
         public float BaseSpeed;
         public float SensoryDistance;
 
-        //Lifespan things
+        // Lifespan things
         public float BabyTime;
         public float AgeTime;
 
@@ -36,7 +35,7 @@ namespace AnimalManagement{
 
         public float LifespanRemaining;
 
-        //Mating things
+        // Mating things
         public Gender Gender;
 
         public float MateUrgency;
@@ -53,7 +52,7 @@ namespace AnimalManagement{
 
         public int BabyAverage;
 
-        //Food things
+        // Food things
         public string FoodSource;
 
         public int MaxViewDistance;
@@ -72,14 +71,19 @@ namespace AnimalManagement{
 
         public bool LookForFood;
         public bool LookForWater;
-        
-        //AI things
-        public NavMeshAgent meshAgent;
 
-        //Movement things
+        public Animal CurrentPredator;
+        public bool IsWaitingToBeEaten;
+        
+        // AI things
+        public NavMeshAgent meshAgent;
+        public State CurrentState;
+        public StateText StateText;
+
+        // Movement things
         public float currentSpeed;
 
-        //Animation things
+        // Animation things
         public Animator[] anim;
 
         public void Init (
@@ -88,40 +92,8 @@ namespace AnimalManagement{
         {
             base.Init(coord);
 
-            if(this is Predator)
-            {
-                this.Type = Type.Predator;
-            }
-            else{
-                this.Type = Type.Prey;
-            }
-            this.Species = species;
-            this.IsBaby = isBaby;
-
-            anim = GetComponentsInChildren<Animator>();
-
-            meshAgent = GetComponent<NavMeshAgent>();
-            this.BaseSpeed = baseSpeed;
-            meshAgent.speed = BaseSpeed;
-
-            this.MaxViewDistance = maxViewDistance;
-
-            CreateGender(babyAverage);
-
-            CreateNeeds(hungerTime, thirstTime, mateUrgency, mateTime, lifespan, isBaby);
-
-            if(!this.IsBaby)
-            {
-                this.BabyTime = 0;
-                this.LookForMate = true;
-            }
-            if(this.IsBaby)
-            {
-                this.BabyTime = babyTime;
-                MakeIntoBaby();
-            }
-             
-            SetState(new Roam(this));
+            CreateValues(species, baseSpeed, maxViewDistance, hungerTime, thirstTime, 
+            mateUrgency, mateTime, lifespan, babyTime, isBaby, babyAverage);
         }
 
         public void Init (
@@ -130,6 +102,13 @@ namespace AnimalManagement{
         {
             transform.position = position;
 
+            CreateValues(species, baseSpeed, maxViewDistance, hungerTime, thirstTime, 
+            mateUrgency, mateTime, lifespan, babyTime, isBaby, babyAverage);
+        }
+
+        public void CreateValues (string species, float baseSpeed, int maxViewDistance, float hungerTime, float thirstTime, 
+            float mateUrgency, float mateTime, float lifespan, float babyTime, bool isBaby, int babyAverage)
+        {            
             if(this is Predator)
             {
                 this.Type = Type.Predator;
@@ -162,7 +141,8 @@ namespace AnimalManagement{
                 this.BabyTime = babyTime;
                 MakeIntoBaby();
             }
-             
+                          
+            StateText = transform.Find("UI/StateText").GetComponent<StateText>();
             SetState(new Roam(this));
         }
 
@@ -315,20 +295,26 @@ namespace AnimalManagement{
         public void Feed()
         {
             this.HungerBar.DecreaseValue((this.FoodTarget.foodValue * this.HungerTime) / 100);
-            SetState(new Roam(this));
             if(this.FoodTarget is Plant)
             {
                 Plant temp = this.FoodTarget as Plant;
                 temp.Deactivate();
             }
-            else{
-                this.FoodTarget.Die();
+            if(this.FoodTarget is Animal){
+                Animal animal = this.FoodTarget as Animal;
+                animal.DieFromEat();
             }
+            SetState(new Roam(this));
         }
 
         public void ReachedFood()
         {   
             SetState(new Eat(this));
+            if(this is Predator)
+            {
+                Animal animalFood = FoodTarget as Animal;
+                animalFood.WaitToBeEaten(this);
+            }
         }
 
         IEnumerator NotFoundFood()
@@ -418,6 +404,13 @@ namespace AnimalManagement{
             SetState(new Wait(this));
         }
 
+        public void WaitToBeEaten(Animal predator)
+        {
+            this.CurrentPredator = predator;
+            this.IsWaitingToBeEaten = true;
+            SetState(new BeEaten(this));
+        }
+
         public void ReachedDestination()
         {
             if(CurrentState is FindFood)
@@ -437,6 +430,11 @@ namespace AnimalManagement{
             {
                 StartCoroutine(RoamAround());
             }
+        }
+
+        public void DieFromEat()
+        {
+            SetState(new Die(this));
         }
     }
 }

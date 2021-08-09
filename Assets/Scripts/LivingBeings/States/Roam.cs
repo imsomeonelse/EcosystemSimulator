@@ -15,7 +15,15 @@ namespace AnimalManagement{
 
         public override void OnStateEnter()
         {
-            //Debug.Log("Roaming");
+            animal.StateText.UpdateText("ROAMING");
+            animal.currentSpeed = animal.BaseSpeed;
+            animal.meshAgent.speed = animal.BaseSpeed;
+
+            for(int i = 0; i < animal.anim.Length; i++)
+            {
+                animal.anim[i].SetFloat("speed", animal.currentSpeed);
+            }
+            
             SetDestination();
         }
 

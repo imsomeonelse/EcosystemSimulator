@@ -7,11 +7,13 @@ namespace AnimalManagement{
     {
         public Die(Animal animal) : base(animal)
         {
-            //Debug.Log("Dying");
+            
         }
 
         public override void OnStateEnter()
         {
+            animal.StateText.UpdateText("DYING");
+
             for(int i = 0; i < animal.anim.Length; i++)
             {
                 animal.anim[i].SetBool("isDead", true);

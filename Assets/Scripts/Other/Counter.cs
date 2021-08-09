@@ -7,7 +7,6 @@ public class Counter : MonoBehaviour
 {
     TextMeshProUGUI text;
 
-    // Start is called before the first frame update
     void Awake()
     {
         text = GetComponent<TextMeshProUGUI>();

@@ -16,7 +16,7 @@ namespace AnimalManagement{
 
         public override void OnStateEnter()
         {
-            //Debug.Log("Finding Food");
+            animal.StateText.UpdateText("FINDING FOOD");
             Find();
         }
 
@@ -30,34 +30,28 @@ namespace AnimalManagement{
                     if(!animal.meshAgent.hasPath || animal.meshAgent.velocity.sqrMagnitude == 0f)
                     {
                         animal.coord = newCoord;
-                        
-                        ReachedFood();
+                        float dist = Vector3.Distance(animal.FoodTarget.transform.position, animal.transform.position);
+                        if(dist <= 10)
+                        {
+                            ReachedFood();
+                        }
+                        else
+                        {
+                            NotFoundFood();
+                        }
                     }
                 }
             }
-
-        }
-
-        /* private void Find()
-        {
-            if(animal is Prey)
+            if(animal is Predator)
             {
-                closestFood = FoodSpawner.plantFoodCoords.ClosestEntity(animal.coord, animal.MaxViewDistance);
-                Plant plantFood = closestFood as Plant;
-                if(!plantFood.isActive)
+                Animal prey = animal.FoodTarget as Animal;
+
+                if(prey.IsWaitingToBeEaten == true && prey.CurrentPredator != animal)
                 {
-                    animal.ReachedDestination();
+                    NotFoundFood();
                 }
             }
-            if(closestFood != null){
-                SetDestination();
-                animal.FoodTarget = closestFood;
-            }
-            else
-            {
-                animal.ReachedDestination();
-            }
-        } */
+        }
 
         private void Find()
         {
@@ -71,14 +65,18 @@ namespace AnimalManagement{
                 }
                 else{
                     if(closestFood is Plant){
+                        animal.StateText.UpdateText("WALKING TO FOOD");
                         Plant plantFood = closestFood as Plant;
                         if(!plantFood.isActive)
                         {
                             NotFoundFood();
                         }
                     }
-                    SetDestination();
+                    else{
+                        animal.StateText.UpdateText("CHASING PREY");
+                    }
                     animal.FoodTarget = closestFood;
+                    SetDestination();
                 }
             }else
             {
@@ -96,10 +94,22 @@ namespace AnimalManagement{
             {
                 float dist = Vector3.Distance(objsFound[i].transform.position, animal.transform.position);
 
-                if (dist < lowestDist && objsFound[i].gameObject.layer != LayerMask.NameToLayer("Animal"))
+                if(animal is Prey)
                 {
-                    lowestDist = dist;
-                    closest = objsFound[i].gameObject.GetComponent<LivingBeing>();
+                    if (dist < lowestDist && objsFound[i].gameObject.layer != LayerMask.NameToLayer("Animal"))
+                    {
+                        lowestDist = dist;
+                        closest = objsFound[i].gameObject.GetComponent<LivingBeing>();
+                    }
+                }
+                if(animal is Predator)
+                {
+                    if (dist < lowestDist && objsFound[i].GetComponent<Animal>()!= null && objsFound[i].GetComponent<Animal>().Type == Type.Prey)
+                    {
+                        //Debug.Log(animal + " found food: " + objsFound[i].GetComponent<Animal>());
+                        lowestDist = dist;
+                        closest = objsFound[i].gameObject.GetComponent<LivingBeing>();
+                    }
                 }
             }
 
@@ -108,15 +118,23 @@ namespace AnimalManagement{
 
         private void SetDestination()
         {
-            animal.currentSpeed = animal.BaseSpeed;
+            if(animal is Predator)
+            {
+                animal.currentSpeed = animal.BaseSpeed * 3;
+                animal.meshAgent.speed = animal.BaseSpeed * 3;
+            }
+            else
+            {
+                animal.currentSpeed = animal.BaseSpeed;
+                animal.meshAgent.speed = animal.BaseSpeed;
+            }
 
             for(int i = 0; i < animal.anim.Length; i++)
             {
                 animal.anim[i].SetFloat("speed", animal.currentSpeed);
             }
 
-            newCoord = closestFood.coord;
-            destination = EnvironmentManager.tileCentres[newCoord.x, newCoord.y];
+            destination = animal.FoodTarget.transform.position;
 
             animal.meshAgent.SetDestination(destination);
 

@@ -10,11 +10,13 @@ namespace AnimalManagement{
 
         public Mate(Animal animal) : base(animal)
         {
-            //Debug.Log(animal + " is Mating with " + animal.CurrentMate);
+
         }
 
         public override void OnStateEnter()
         {
+            animal.StateText.UpdateText("MATING WITH " + animal.CurrentMate.ToString().ToUpper());
+            
             targetTime = Time.time + mateTime;
             animal.IsWaitingForMate = false;
 

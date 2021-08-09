@@ -7,12 +7,17 @@ namespace AnimalManagement{
     {
         public Wait(Animal animal) : base(animal)
         {
-            //Debug.Log("Waiting");
+
         }
 
         public override void OnStateEnter()
         {
-            
+            animal.StateText.UpdateText("WAITING");
+
+            for(int i = 0; i < animal.anim.Length; i++)
+            {
+                animal.anim[i].SetBool("isBeingEaten", true);
+            }
         }
 
         public override void Tick()
