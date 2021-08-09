@@ -11,7 +11,7 @@ namespace AnimalManagement{
         public int mapIndex;
         public int foodValue = 70;
 
-        protected bool dead;
+        public bool IsDead;
 
         public virtual void Init (Coord coord) 
         {
@@ -23,9 +23,9 @@ namespace AnimalManagement{
 
         public virtual void Die ()
         {
-            if (!dead) {
-                dead = true;
-
+            if(!IsDead)
+            {
+                IsDead = true;
                 AnimalManager aM = Object.FindObjectOfType<AnimalManager>();
 
                 if(this is Predator)

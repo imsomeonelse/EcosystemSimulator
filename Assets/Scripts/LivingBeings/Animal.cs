@@ -313,7 +313,7 @@ namespace AnimalManagement{
             if(this is Predator)
             {
                 Animal animalFood = FoodTarget as Animal;
-                animalFood.WaitToBeEaten(this);
+                animalFood.WaitToBeEaten();
             }
         }
 
@@ -404,9 +404,26 @@ namespace AnimalManagement{
             SetState(new Wait(this));
         }
 
-        public void WaitToBeEaten(Animal predator)
+        public void BeChased(Animal predator)
         {
             this.CurrentPredator = predator;
+            StartCoroutine(RunAway());
+        }
+
+        IEnumerator RunAway()
+        {
+            yield return new WaitForSeconds(2);
+            SetState(new RunAway(this));
+        }
+
+        public void StopRunningAway()
+        {
+            this.CurrentPredator = null;
+            SetState(new Roam(this));
+        }
+
+        public void WaitToBeEaten()
+        {
             this.IsWaitingToBeEaten = true;
             SetState(new BeEaten(this));
         }

@@ -12,11 +12,14 @@ namespace AnimalManagement{
 
         public override void OnStateEnter()
         {
-            animal.StateText.UpdateText("DYING");
-
-            for(int i = 0; i < animal.anim.Length; i++)
+            if(!animal.IsDead)
             {
-                animal.anim[i].SetBool("isDead", true);
+                animal.StateText.UpdateText("DYING");
+
+                for(int i = 0; i < animal.anim.Length; i++)
+                {
+                    animal.anim[i].SetBool("isDead", true);
+                }
             }
         }
 

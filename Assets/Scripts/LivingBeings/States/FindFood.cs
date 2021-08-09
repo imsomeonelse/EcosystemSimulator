@@ -30,10 +30,17 @@ namespace AnimalManagement{
                     if(!animal.meshAgent.hasPath || animal.meshAgent.velocity.sqrMagnitude == 0f)
                     {
                         animal.coord = newCoord;
-                        float dist = Vector3.Distance(animal.FoodTarget.transform.position, animal.transform.position);
-                        if(dist <= 10)
+                        if(animal.FoodTarget != null)
                         {
-                            ReachedFood();
+                            float dist = Vector3.Distance(animal.FoodTarget.transform.position, animal.transform.position);
+                            if(dist <= 10)
+                            {
+                                ReachedFood();
+                            }
+                            else
+                            {
+                                NotFoundFood();
+                            }
                         }
                         else
                         {
@@ -120,8 +127,10 @@ namespace AnimalManagement{
         {
             if(animal is Predator)
             {
-                animal.currentSpeed = animal.BaseSpeed * 3;
-                animal.meshAgent.speed = animal.BaseSpeed * 3;
+                animal.currentSpeed = animal.BaseSpeed * 2;
+                animal.meshAgent.speed = animal.BaseSpeed * 2;
+                Prey prey = animal.FoodTarget as Prey;
+                prey.BeChased(animal);
             }
             else
             {
@@ -148,6 +157,11 @@ namespace AnimalManagement{
         private void NotFoundFood()
         {
             animal.ReachedDestination();
+            if(animal.FoodTarget != null && animal is Predator)
+            {
+                Prey prey = animal.FoodTarget as Prey;
+                prey.StopRunningAway();
+            }
         }
 
         private void ReachedFood()

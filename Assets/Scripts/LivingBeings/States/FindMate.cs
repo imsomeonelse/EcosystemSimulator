@@ -30,7 +30,7 @@ namespace AnimalManagement{
                     {
                         animal.coord = closestMate.coord;
                         float dist = Vector3.Distance(closestMate.transform.position, animal.transform.position);
-                        if(dist <= 10)
+                        if(dist <= 20)
                         {
                             ReachedMate();
                         }
