@@ -14,10 +14,13 @@ public class FollowCamera : MonoBehaviour
     Camera playerCamera;
 
     GameObject ui;
+    public Texture2D hoverCursor;
+    public Texture2D autoCursor;
 
     // Start is called before the first frame update
     private void Start() 
     {
+        Cursor.SetCursor(autoCursor, Vector2.zero, CursorMode.Auto);
         playerCamera = gameObject.transform.GetChild(0).gameObject.GetComponent<Camera>();
     }
 
@@ -50,7 +53,6 @@ public class FollowCamera : MonoBehaviour
             if(animalFollowing == null)
             {
                 isFollowing = false;
-                ui.transform.Rotate(0.0f, -180.0f, 0.0f, Space.Self);
             }
             if (Input.GetMouseButtonDown(0)){
                 float gap = Time.time - previousClick;

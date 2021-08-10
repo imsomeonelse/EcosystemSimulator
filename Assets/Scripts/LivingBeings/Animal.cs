@@ -86,6 +86,10 @@ namespace AnimalManagement{
         // Animation things
         public Animator[] anim;
 
+        //Others
+        public Texture2D hoverCursor;
+        public Texture2D autoCursor;
+
         public void Init (
             Coord coord, string species, float baseSpeed, int maxViewDistance, float hungerTime, float thirstTime, 
             float mateUrgency, float mateTime, float lifespan, float babyTime, bool isBaby, int babyAverage) 
@@ -108,7 +112,10 @@ namespace AnimalManagement{
 
         public void CreateValues (string species, float baseSpeed, int maxViewDistance, float hungerTime, float thirstTime, 
             float mateUrgency, float mateTime, float lifespan, float babyTime, bool isBaby, int babyAverage)
-        {            
+        {          
+            hoverCursor = Camera.main.transform.parent.gameObject.GetComponent<FollowCamera>().hoverCursor;
+            autoCursor = Camera.main.transform.parent.gameObject.GetComponent<FollowCamera>().autoCursor;
+
             if(this is Predator)
             {
                 this.Type = Type.Predator;
@@ -452,6 +459,16 @@ namespace AnimalManagement{
         public void DieFromEat()
         {
             SetState(new Die(this));
+        }
+
+        void OnMouseEnter()
+        {
+           Cursor.SetCursor(hoverCursor, Vector2.zero, CursorMode.Auto);
+        }
+       
+        void OnMouseExit()
+        {
+           Cursor.SetCursor(autoCursor, Vector2.zero, CursorMode.Auto);
         }
     }
 }
