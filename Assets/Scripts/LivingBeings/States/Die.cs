@@ -20,6 +20,7 @@ namespace AnimalManagement{
                 {
                     animal.anim[i].SetBool("isDead", true);
                 }
+                animal.IsDying = true;
             }
         }
 

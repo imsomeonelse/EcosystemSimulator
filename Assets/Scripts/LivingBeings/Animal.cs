@@ -35,6 +35,8 @@ namespace AnimalManagement{
 
         public float LifespanRemaining;
 
+        public bool IsDying;
+
         // Mating things
         public Gender Gender;
 
@@ -117,6 +119,8 @@ namespace AnimalManagement{
             hoverCursor = Camera.main.transform.parent.gameObject.GetComponent<FollowCamera>().hoverCursor;
             autoCursor = Camera.main.transform.parent.gameObject.GetComponent<FollowCamera>().autoCursor;
             audioSource = GetComponent<AudioSource>();
+
+            IsDying = false;
 
             if(this is Predator)
             {
@@ -284,13 +288,16 @@ namespace AnimalManagement{
 
         public void SetState(State state)
         {
-            if (CurrentState != null)
-                CurrentState.OnStateExit();
+            if(!this.IsDying)
+            {
+                if (CurrentState != null)
+                    CurrentState.OnStateExit();
 
-            CurrentState = state;
+                CurrentState = state;
 
-            if (CurrentState != null)
-                CurrentState.OnStateEnter();
+                if (CurrentState != null)
+                    CurrentState.OnStateEnter();
+            }
         }
 
         IEnumerator RoamAround()
