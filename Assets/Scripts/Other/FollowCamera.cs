@@ -54,6 +54,12 @@ public class FollowCamera : MonoBehaviour
             {
                 isFollowing = false;
             }
+            else
+            {
+                playerCamera.transform.LookAt(animalFollowing);
+                transform.position = animalFollowing.position;
+                playerCamera.transform.rotation = animalFollowing.rotation;
+            }
             if (Input.GetMouseButtonDown(0)){
                 float gap = Time.time - previousClick;
                 if( gap < doubleClickDelay ){
@@ -62,9 +68,6 @@ public class FollowCamera : MonoBehaviour
                 }
                 previousClick = Time.time;
             }
-            playerCamera.transform.LookAt(animalFollowing);
-            transform.position = animalFollowing.position;
-            playerCamera.transform.rotation = animalFollowing.rotation;
         }
     }
 

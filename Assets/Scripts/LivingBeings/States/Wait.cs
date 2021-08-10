@@ -13,10 +13,13 @@ namespace AnimalManagement{
         public override void OnStateEnter()
         {
             animal.StateText.UpdateText("WAITING");
+            
+            animal.currentSpeed = 0;
+            animal.meshAgent.speed = 0;
 
             for(int i = 0; i < animal.anim.Length; i++)
             {
-                animal.anim[i].SetBool("isBeingEaten", true);
+                animal.anim[i].SetFloat("speed", 0);
             }
         }
 

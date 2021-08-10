@@ -33,7 +33,7 @@ namespace AnimalManagement{
                         if(animal.FoodTarget != null)
                         {
                             float dist = Vector3.Distance(animal.FoodTarget.transform.position, animal.transform.position);
-                            if(dist <= 10)
+                            if(dist <= 20)
                             {
                                 ReachedFood();
                             }
@@ -127,8 +127,8 @@ namespace AnimalManagement{
         {
             if(animal is Predator)
             {
-                animal.currentSpeed = animal.BaseSpeed * 2;
-                animal.meshAgent.speed = animal.BaseSpeed * 2;
+                animal.currentSpeed = animal.BaseSpeed * 3;
+                animal.meshAgent.speed = animal.BaseSpeed * 3;
                 Prey prey = animal.FoodTarget as Prey;
                 prey.BeChased(animal);
             }

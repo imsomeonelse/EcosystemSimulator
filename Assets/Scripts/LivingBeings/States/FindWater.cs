@@ -55,6 +55,7 @@ namespace AnimalManagement{
         private void SetDestination()
         {
             animal.currentSpeed = animal.BaseSpeed;
+            animal.meshAgent.speed = animal.BaseSpeed;
 
             for(int i = 0; i < animal.anim.Length; i++)
             {

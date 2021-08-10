@@ -89,7 +89,7 @@ namespace AnimalManagement{
         //Others
         public Texture2D hoverCursor;
         public Texture2D autoCursor;
-        public AudioSource audio;
+        public AudioSource audioSource;
 
         public void Init (
             Coord coord, string species, float baseSpeed, int maxViewDistance, float hungerTime, float thirstTime, 
@@ -116,7 +116,7 @@ namespace AnimalManagement{
         {          
             hoverCursor = Camera.main.transform.parent.gameObject.GetComponent<FollowCamera>().hoverCursor;
             autoCursor = Camera.main.transform.parent.gameObject.GetComponent<FollowCamera>().autoCursor;
-            audio = GetComponent<AudioSource>();
+            audioSource = GetComponent<AudioSource>();
 
             if(this is Predator)
             {
@@ -328,7 +328,7 @@ namespace AnimalManagement{
 
         IEnumerator NotFoundFood()
         {
-            float waitLength = Random.Range(1f, 2.9f);
+            float waitLength = Random.Range(0.1f, 1.0f);
             SetState(new Roam(this));
             yield return new WaitForSeconds(waitLength);
             this.LookForFood = true;
@@ -475,7 +475,7 @@ namespace AnimalManagement{
 
         void OnMouseDown() 
         {
-            audio.Play();
+            audioSource.Play();
             for(int i = 0; i < anim.Length; i++)
             {
                 anim[i].SetTrigger("clicked");
