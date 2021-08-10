@@ -8,18 +8,14 @@ public class FollowCamera : MonoBehaviour
     float doubleClickDelay = 0.2f;
     float previousClick = 0f;
 
-    bool isFollowing = false;
+    public bool isFollowing = false;
     Transform animalFollowing;
 
-    CharacterController characterController;
     Camera playerCamera;
-    Vector3 defaultPos = new Vector3(0f, 3.5f, -5f);
-    Vector3 defaultRot = new Vector3(20f, 0f, 0f);
 
     // Start is called before the first frame update
     private void Start() 
     {
-        characterController = gameObject.GetComponent<CharacterController>();
         playerCamera = gameObject.transform.GetChild(0).gameObject.GetComponent<Camera>();
     }
 
@@ -38,7 +34,7 @@ public class FollowCamera : MonoBehaviour
                         LivingBeing livingBeing = gameObject.GetComponent<LivingBeing>();
                         if(livingBeing is Animal)
                         {
-                            animalFollowing = hit.transform;
+                            animalFollowing = hit.transform.Find("CameraTarget").transform;
                             isFollowing = true;
                             StartFollow();
                         }
@@ -60,18 +56,16 @@ public class FollowCamera : MonoBehaviour
                 }
                 previousClick = Time.time;
             }
-            Vector3 newPos = animalFollowing.position + defaultPos;
-            playerCamera.transform.position = newPos;
+            playerCamera.transform.LookAt(animalFollowing);
+            transform.position = animalFollowing.position;
+            playerCamera.transform.rotation = animalFollowing.rotation;
         }
     }
 
     void StartFollow()
     {
-        Debug.Log("henlo");
-        Vector3 refPos = Vector3.zero;
-        Quaternion newRot = animalFollowing.rotation * Quaternion.Euler(defaultRot);
-        Vector3 newPos = animalFollowing.position + defaultPos;
-        //playerCamera.transform.rotation =  newRot;
-        playerCamera.transform.position = newPos;
+        playerCamera.transform.LookAt(animalFollowing);
+        transform.position = Vector3.Lerp(transform.position, animalFollowing.position, Time.deltaTime);
+        playerCamera.transform.rotation = Quaternion.Lerp(transform.rotation, animalFollowing.rotation, Time.deltaTime);
     }
 }

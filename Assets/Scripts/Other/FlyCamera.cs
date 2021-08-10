@@ -20,12 +20,16 @@ public class FlyCamera : MonoBehaviour {
     float rotationX = 0;
     LineRenderer lineRenderer;
 
-    private void Awake()
+    FollowCamera followCamera;
+
+    private void Start()
     {
         characterController = gameObject.AddComponent<CharacterController>();
         playerCamera = gameObject.transform.GetChild(0).gameObject.GetComponent<Camera>();
 
         lineRenderer = gameObject.GetComponent<LineRenderer>();
+
+        followCamera = gameObject.GetComponent<FollowCamera>();
 
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
@@ -33,10 +37,13 @@ public class FlyCamera : MonoBehaviour {
 
     void Update()
     {
-        Move();
-        Rotate();
-        Fly();
-        Zoom();
+        if(!followCamera.isFollowing)
+        {
+            Move();
+            Rotate();
+            Fly();
+            Zoom();
+        }
     }
 
     private void Move(){
