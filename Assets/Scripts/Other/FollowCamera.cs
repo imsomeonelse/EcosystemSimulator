@@ -13,6 +13,8 @@ public class FollowCamera : MonoBehaviour
 
     Camera playerCamera;
 
+    GameObject ui;
+
     // Start is called before the first frame update
     private void Start() 
     {
@@ -36,7 +38,7 @@ public class FollowCamera : MonoBehaviour
                         {
                             animalFollowing = hit.transform.Find("CameraTarget").transform;
                             isFollowing = true;
-                            StartFollow();
+                            StartFollow(gameObject);
                         }
                     }
                 }
@@ -48,11 +50,13 @@ public class FollowCamera : MonoBehaviour
             if(animalFollowing == null)
             {
                 isFollowing = false;
+                ui.transform.Rotate(0.0f, -180.0f, 0.0f, Space.Self);
             }
             if (Input.GetMouseButtonDown(0)){
                 float gap = Time.time - previousClick;
                 if( gap < doubleClickDelay ){
                     isFollowing = false;
+                    ui.transform.Rotate(0.0f, -180.0f, 0.0f, Space.Self);
                 }
                 previousClick = Time.time;
             }
@@ -62,10 +66,12 @@ public class FollowCamera : MonoBehaviour
         }
     }
 
-    void StartFollow()
+    void StartFollow(GameObject animal)
     {
         playerCamera.transform.LookAt(animalFollowing);
         transform.position = Vector3.Lerp(transform.position, animalFollowing.position, Time.deltaTime);
         playerCamera.transform.rotation = Quaternion.Lerp(transform.rotation, animalFollowing.rotation, Time.deltaTime);
+        ui = animal.transform.Find("UI").gameObject;
+        ui.transform.Rotate(0.0f, 180.0f, 0.0f, Space.Self);
     }
 }
