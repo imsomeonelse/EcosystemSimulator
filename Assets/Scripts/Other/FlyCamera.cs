@@ -20,15 +20,15 @@ public class FlyCamera : MonoBehaviour {
     float rotationX = 0;
     LineRenderer lineRenderer;
 
-    private void Start()
+    private void Awake()
     {
         characterController = gameObject.AddComponent<CharacterController>();
         playerCamera = gameObject.transform.GetChild(0).gameObject.GetComponent<Camera>();
 
         lineRenderer = gameObject.GetComponent<LineRenderer>();
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
 
     void Update()
