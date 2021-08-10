@@ -22,6 +22,19 @@ namespace AnimalManagement{
 
         public override void Tick()
         {
+            float dist = 1000;
+            if(animal.FoodTarget != null)
+            {
+                dist = Vector3.Distance(animal.FoodTarget.transform.position, animal.transform.position);
+                if(dist <= 5)
+                {
+                    ReachedFood();
+                }
+            }
+            else
+            {
+                NotFoundFood();
+            }
              // Check if we've reached the destination
             if (!animal.meshAgent.pathPending)
             {
@@ -32,8 +45,8 @@ namespace AnimalManagement{
                         animal.coord = newCoord;
                         if(animal.FoodTarget != null)
                         {
-                            float dist = Vector3.Distance(animal.FoodTarget.transform.position, animal.transform.position);
-                            if(dist <= 20)
+                            dist = Vector3.Distance(animal.FoodTarget.transform.position, animal.transform.position);
+                            if(dist <= 5)
                             {
                                 ReachedFood();
                             }
@@ -127,8 +140,8 @@ namespace AnimalManagement{
         {
             if(animal is Predator)
             {
-                animal.currentSpeed = animal.BaseSpeed * 3;
-                animal.meshAgent.speed = animal.BaseSpeed * 3;
+                animal.currentSpeed = animal.BaseSpeed * 2;
+                animal.meshAgent.speed = animal.BaseSpeed * 2;
                 Prey prey = animal.FoodTarget as Prey;
                 prey.BeChased(animal);
             }
@@ -177,7 +190,6 @@ namespace AnimalManagement{
             {
                 animal.anim[i].SetFloat("speed", 0);
             }
-
         }
     }
 }

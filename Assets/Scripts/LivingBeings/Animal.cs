@@ -295,7 +295,7 @@ namespace AnimalManagement{
 
         IEnumerator RoamAround()
         {
-            float waitLength = Random.Range(0f, 2.0f);
+            float waitLength = Random.Range(0f, 1.0f);
             SetState(new Wait(this));
             yield return new WaitForSeconds(waitLength);
             SetState(new Roam(this));
@@ -328,7 +328,7 @@ namespace AnimalManagement{
 
         IEnumerator NotFoundFood()
         {
-            float waitLength = Random.Range(0.1f, 1.0f);
+            float waitLength = Random.Range(0f, 1.0f);
             SetState(new Roam(this));
             yield return new WaitForSeconds(waitLength);
             this.LookForFood = true;
@@ -347,7 +347,7 @@ namespace AnimalManagement{
 
         IEnumerator NotFoundWater()
         {
-            float waitLength = Random.Range(1f, 2.9f);
+            float waitLength = Random.Range(0f, 1.0f);
             SetState(new Roam(this));
             yield return new WaitForSeconds(waitLength);
             this.LookForWater = true;
@@ -398,7 +398,7 @@ namespace AnimalManagement{
         IEnumerator NotFoundMate()
         {
             DeactivateHeart();
-            float waitLength = Random.Range(1f, 2.9f);
+            float waitLength = Random.Range(0f, 1.0f);
             SetState(new Roam(this));
             yield return new WaitForSeconds(waitLength);
             this.LookForMate = true;

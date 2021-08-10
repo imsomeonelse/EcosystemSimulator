@@ -21,6 +21,19 @@ namespace AnimalManagement{
 
         public override void Tick()
         {
+            float dist = 1000;
+            if(closestMate != null)
+            {
+                dist = Vector3.Distance(closestMate.transform.position, animal.transform.position);
+                if(dist <= 5)
+                {
+                    ReachedMate();
+                }
+            }
+            else
+            {
+                NotFoundMate();
+            }
              // Check if we've reached the destination
             if (!animal.meshAgent.pathPending)
             {
@@ -29,8 +42,8 @@ namespace AnimalManagement{
                     if(!animal.meshAgent.hasPath || animal.meshAgent.velocity.sqrMagnitude == 0f)
                     {
                         animal.coord = closestMate.coord;
-                        float dist = Vector3.Distance(closestMate.transform.position, animal.transform.position);
-                        if(dist <= 20)
+                        dist = Vector3.Distance(closestMate.transform.position, animal.transform.position);
+                        if(dist <= 5)
                         {
                             ReachedMate();
                         }

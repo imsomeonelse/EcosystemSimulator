@@ -92,7 +92,6 @@ namespace AnimalManagement{
             {
                 animal.anim[i].SetFloat("speed", 0);
             }
-
         }
     }
 }
