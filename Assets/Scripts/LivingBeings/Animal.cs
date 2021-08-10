@@ -89,6 +89,7 @@ namespace AnimalManagement{
         //Others
         public Texture2D hoverCursor;
         public Texture2D autoCursor;
+        public AudioSource audio;
 
         public void Init (
             Coord coord, string species, float baseSpeed, int maxViewDistance, float hungerTime, float thirstTime, 
@@ -115,6 +116,7 @@ namespace AnimalManagement{
         {          
             hoverCursor = Camera.main.transform.parent.gameObject.GetComponent<FollowCamera>().hoverCursor;
             autoCursor = Camera.main.transform.parent.gameObject.GetComponent<FollowCamera>().autoCursor;
+            audio = GetComponent<AudioSource>();
 
             if(this is Predator)
             {
@@ -469,6 +471,15 @@ namespace AnimalManagement{
         void OnMouseExit()
         {
            Cursor.SetCursor(autoCursor, Vector2.zero, CursorMode.Auto);
+        }
+
+        void OnMouseDown() 
+        {
+            audio.Play();
+            for(int i = 0; i < anim.Length; i++)
+            {
+                anim[i].SetTrigger("clicked");
+            }    
         }
     }
 }
